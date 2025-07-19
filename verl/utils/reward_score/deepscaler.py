@@ -76,8 +76,16 @@ def compute_score(data_source, solution_str, ground_truth, extra_info=None, use_
     if model_answer is None:
         return 0.
 
+    # Initialize ground_truths as a list
+    ground_truths = []
+    
     if isinstance(ground_truth, (str, float, int)):
         ground_truths = [ground_truth]
+    elif isinstance(ground_truth, list):
+        ground_truths = ground_truth
+    else:
+        # Handle case where ground_truth is None or another type
+        return 0.
 
     processed_ground_truths = []
     for truth in ground_truths:
@@ -98,4 +106,3 @@ def compute_score(data_source, solution_str, ground_truth, extra_info=None, use_
             return 1.
     
     return 0.
-

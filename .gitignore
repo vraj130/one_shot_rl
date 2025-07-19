@@ -13,6 +13,11 @@ accuracy/*
 !accuracy/acc_baseline/*
 !checkpoints/*/*/eval/figures
 
+# Project specific folders
+/training_checkpoints/
+/pretrained_checkpoints/
+/data/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

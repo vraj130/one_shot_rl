@@ -1,0 +1,11 @@
+isc_project_id = "prj-hail-coconut-fenugreek-250517	"
+experiment_name = "one_shot_rl"
+gpus = 8
+compute_mode = "cycle"
+dataset_id_list = []
+command = '''
+source /root/.one_shot_rl/bin/activate && 
+torchrun --nnodes=$NNODES --nproc-per-node=$N_PROC 
+--master_addr=$MASTER_ADDR --master_port=$MASTER_PORT --node_rank=$RANK 
+/root/one_shot_rl/scripts/train/training_qwen3_one_shot.sh
+--lr 0.001 --batch-size 16'''

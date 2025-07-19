@@ -1,0 +1,10 @@
+isc_project_id = "<your-project-id>
+experiment_name = "foo_experiment"
+gpus = 48
+compute_mode = "cycle"
+command = '''
+source /root/.fashion/bin/activate && 
+cd /root/isc-demos/fashion_mnist/ && 
+torchrun --nnodes=$NNODES --nproc-per-node=$N_PROC 
+--master_addr=$MASTER_ADDR --master_port=$MASTER_PORT --node_rank=$RANK 
+train.py --lr 0.001 --batch-size 16 --save-dir $OUTPUT_PATH --tboard-path $OUTPUT_PATH/tb'''
