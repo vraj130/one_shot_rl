@@ -6,7 +6,7 @@ export CHECKPOINTS_DIR="./checkpoints"
 export VLLM_ATTENTION_BACKEND=XFORMERS
 
 # Add PyTorch memory optimization settings
-export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True,garbage_collection_threshold:0.6
+export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True,garbage_collection_threshold:0.5,max_split_size_mb:128
 
 # Disable PyTorch inductor to avoid compilation errors
 export TORCH_COMPILE_BACKEND=eager
@@ -29,17 +29,17 @@ python3 -m verl.trainer.main_ppo \
  algorithm.adv_estimator=grpo \
  data.train_files=data/train/one_shot_rlvr/arc_agi_2_train.parquet \
  data.val_files=data/test/arc_agi_2_eval.parquet \
- data.train_batch_size=2 \
+ data.train_batch_size=1 \
  data.val_batch_size=1 \
- data.max_prompt_length=1024 \
- data.max_response_length=2048 \
+ data.max_prompt_length=512 \
+ data.max_response_length=1024 \
  reward_model.reward_manager='naive' \
  actor_rollout_ref.model.path="$MODEL_PATH" \
  actor_rollout_ref.actor.optim.lr=1e-6 \
  actor_rollout_ref.model.use_remove_padding=True \
  actor_rollout_ref.actor.ppo_mini_batch_size=1 \
  actor_rollout_ref.actor.use_dynamic_bsz=True \
- actor_rollout_ref.actor.ppo_max_token_len_per_gpu=8000 \
+ actor_rollout_ref.actor.ppo_max_token_len_per_gpu=2000 \
  actor_rollout_ref.actor.use_kl_loss=True \
  actor_rollout_ref.actor.kl_loss_coef=0.001 \
  actor_rollout_ref.actor.kl_loss_type=low_var_kl \
@@ -51,7 +51,7 @@ python3 -m verl.trainer.main_ppo \
  actor_rollout_ref.rollout.name=hf \
  actor_rollout_ref.rollout.temperature=0.6 \
  +actor_rollout_ref.rollout.val_temperature=0.6 \
- actor_rollout_ref.rollout.gpu_memory_utilization=0.4 \
+ actor_rollout_ref.rollout.gpu_memory_utilization=0.1 \
  actor_rollout_ref.rollout.n=1 \
  +actor_rollout_ref.rollout.n_val=1 \
  actor_rollout_ref.ref.fsdp_config.param_offload=True \
