@@ -8,8 +8,12 @@ export VLLM_ATTENTION_BACKEND=XFORMERS
 # Add PyTorch memory optimization settings
 export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True,garbage_collection_threshold:0.6
 
-# Enable multi-GPU training
-export CUDA_VISIBLE_DEVICES=0,1
+# Disable PyTorch inductor to avoid compilation errors
+export TORCH_COMPILE_BACKEND=eager
+export TORCH_INDUCTOR_DISABLE=1
+
+# Use single GPU training to avoid NCCL peer access issues
+export CUDA_VISIBLE_DEVICES=0
 
 # Add Ray initialization settings
 export RAY_DEDUP_LOGS=0
@@ -25,7 +29,7 @@ python3 -m verl.trainer.main_ppo \
  algorithm.adv_estimator=grpo \
  data.train_files=data/train/one_shot_rlvr/arc_agi_2_train.parquet \
  data.val_files=data/test/arc_agi_2_eval.parquet \
- data.train_batch_size=1 \
+ data.train_batch_size=2 \
  data.val_batch_size=1 \
  data.max_prompt_length=1024 \
  data.max_response_length=2048 \
@@ -43,7 +47,7 @@ python3 -m verl.trainer.main_ppo \
  actor_rollout_ref.actor.fsdp_config.param_offload=False \
  +actor_rollout_ref.actor.fsdp_config.grad_offload=True \
  actor_rollout_ref.actor.fsdp_config.optimizer_offload=True \
- actor_rollout_ref.rollout.tensor_model_parallel_size=2 \
+ actor_rollout_ref.rollout.tensor_model_parallel_size=1 \
  actor_rollout_ref.rollout.name=hf \
  actor_rollout_ref.rollout.temperature=0.6 \
  +actor_rollout_ref.rollout.val_temperature=0.6 \
@@ -58,7 +62,7 @@ python3 -m verl.trainer.main_ppo \
  trainer.experiment_name='Qwen2_one_shot_rl'\
  trainer.checkpoints_dir="$SAVE_DIR" \
  +trainer.val_before_train=True \
- trainer.n_gpus_per_node=4   \
+ trainer.n_gpus_per_node=1   \
  trainer.nnodes=1 \
  trainer.save_freq=20 \
  trainer.test_freq=21 \
